@@ -6,7 +6,12 @@ import xlrd
 import pyperclip
 import datetime
 import os,sys
-import waterRPA
+
+import zxl2.waterRPA as zxl
+
+
+#sys.path.append(r'.\zxl2')
+#import waterRPA
 
 os.chdir(sys.path[0])  #使用相对路径
 
@@ -24,15 +29,15 @@ if __name__ == '__main__': #如果此文件不是作为其他文件的输如文�
             minute = datetime.datetime.now().minute
             print(hour,":",minute)
             if hour==8 and minute==0:
-                waterRPA.girlfrien_time(1,hour,minute)
+                zxl.girlfrien_time(1,hour,minute)
             elif hour==12 and minute==0: 
-                waterRPA.girlfrien_time(2,hour,minute) 
+                zxl.girlfrien_time(2,hour,minute) 
             elif hour==23 and minute==16: 
                 print("晚安")
-                waterRPA.girlfrien_time(3,hour,minute)
+                zxl.girlfrien_time(3,hour,minute)
             else:
                 print(datetime.datetime.now())
-                waterRPA.girlfrien_time(3,hour,minute)
+                zxl.girlfrien_time(3,hour,minute)
                 #time.sleep(10)
 
 
