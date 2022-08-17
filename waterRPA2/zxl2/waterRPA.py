@@ -99,13 +99,13 @@ def time_work(my_sheet,i,hour,minute):
             inputValue = my_sheet.row(i)[3].value   
     elif hour == 11 and minute == 0:
             inputValue = my_sheet.row(i)[4].value  
+    return inputValue
 
 
 #任务
 def mainWork(my_sheet,hour,minute):
     
     i = 1
-    time_flag = flag
     while i < my_sheet.nrows:
         #取本行指令的操作类型
         cmdType = my_sheet.row(i)[0]
@@ -139,7 +139,7 @@ def mainWork(my_sheet,hour,minute):
             print("右键",img) 
         #4代表输入
         elif cmdType.value == 4.0:
-            time_work(my_sheet,i,hour,minute)  
+            inputValue =  time_work(my_sheet,i,hour,minute)  
             pyperclip.copy(inputValue)
             pyautogui.hotkey('ctrl','v')
             time.sleep(0.5)
