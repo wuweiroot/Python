@@ -1,4 +1,5 @@
 
+from ast import And
 import pyautogui  #主力库
 import time
 import xlrd
@@ -90,9 +91,18 @@ def dataCheck(my1):
                 checkCmd = False
         i += 1
     return checkCmd
+#时间任务
+def time_work(my_sheet,i,hour,minute):
+    if hour == 8 and minute == 0:
+            inputValue = my_sheet.row(i)[1].value    
+    elif hour == 12 and minute == 0:
+            inputValue = my_sheet.row(i)[3].value   
+    elif hour == 11 and minute == 0:
+            inputValue = my_sheet.row(i)[4].value  
+
 
 #任务
-def mainWork(my_sheet,flag):
+def mainWork(my_sheet,hour,minute):
     
     i = 1
     time_flag = flag
@@ -129,12 +139,7 @@ def mainWork(my_sheet,flag):
             print("右键",img) 
         #4代表输入
         elif cmdType.value == 4.0:
-            if time_flag == 1:
-                 inputValue = my_sheet.row(i)[1].value    
-            elif time_flag == 2:
-                 inputValue = my_sheet.row(i)[3].value   
-            elif time_flag == 3:
-                 inputValue = my_sheet.row(i)[4].value  
+            time_work(my_sheet,i,hour,minute)  
             pyperclip.copy(inputValue)
             pyautogui.hotkey('ctrl','v')
             time.sleep(0.5)
@@ -154,8 +159,8 @@ def mainWork(my_sheet,flag):
         i += 1
 
 #用于给女朋友发早安
-def girlfrien_time(time_flag,hour,minute):
-    if time_flag == 0:
+def girlfrien_time(hour,minute):
+    if hour == 99:
         return
     print("girlfrien_time:",hour,":",minute)
     file = '.\zxl2\cmd.xls'
@@ -170,14 +175,14 @@ def girlfrien_time(time_flag,hour,minute):
         key = '1'
         if key=='1':
             #循环拿出每一行指令
-            mainWork(my1, time_flag)
+            mainWork(my1, hour,minute)
         elif key=='2':
             while True:
-                mainWork(my1 , time_flag)
+                mainWork(my1 , hour,minute)
                 time.sleep(0.1)
                 print("等待0.1秒")    
     else:
         print('输入有误或者已经退出!')
 
 if __name__ == '__main__': #如果此文件不是作为其他文件的输如文件那么if成立,否则__name__==__文件名__
-    girlfrien_time(1)
+    girlfrien_time(99,99)

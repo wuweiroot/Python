@@ -24,21 +24,16 @@ if __name__ == '__main__': #如果此文件不是作为其他文件的输如文�
         #hour = not_time.hour
         #minute = not_time.minute
         #print(hour,":",minute)
-        #if(datetime.datetime.now().hour==8 or datetime.datetime.now().hour==12 or datetime.datetime.now().hour==23):
+        if(datetime.datetime.now().hour==8 or datetime.datetime.now().hour==12 or datetime.datetime.now().hour==23):
             hour = datetime.datetime.now().hour
             minute = datetime.datetime.now().minute
             print(hour,":",minute)
-            if hour==8 and minute==0:
-                zxl.girlfrien_time(1,hour,minute)
-            elif hour==12 and minute==0: 
-                zxl.girlfrien_time(2,hour,minute) 
-            elif hour==23 and minute==16: 
-                print("晚安")
-                zxl.girlfrien_time(3,hour,minute)
+            if (hour==8 and minute==0)or (hour==12 and minute==0) or(hour==23 and minute==0):
+                zxl.girlfrien_time(hour,minute)
             else:
-                print(datetime.datetime.now())
-                zxl.girlfrien_time(3,hour,minute)
-                #time.sleep(10)
+                #print(datetime.datetime.now())
+                #zxl.girlfrien_time(hour,minute)
+                time.sleep(58)
 
 
 
