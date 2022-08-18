@@ -1,5 +1,7 @@
 
-from ast import And
+from ast import And, Break, Return
+import re
+from sre_parse import State
 import pyautogui  #主力库
 import time
 import xlrd
@@ -17,14 +19,22 @@ ctype : 2 数字
 
 
 def mouseClick(clickTimes,lOrR,img,reTry):
+    State = 1
+    i = 1
     if reTry == 1:
-        while True:
+        for i in  range(10):
             location=pyautogui.locateCenterOnScreen(img,confidence=0.9)  #根据传入的图片返回屏幕中图片的位置
             if location is not None:
                 pyautogui.click(location.x,location.y,clicks=clickTimes,interval=0.2,duration=0.2,button=lOrR)  #操作键盘和鼠标的接口
+                if clickTimes == 1:
+                    print("单击左键",img)
+                if clickTimes == 2:
+                    print("双击左键",img)
+                State = 0
                 break
-            print("未找到匹配图片,0.5秒后重试")
+            print("未找到匹配图片,0.5秒后重试 重试次数：",i)
             time.sleep(0.5)
+            i = i+1
     elif reTry == -1:
         while True:
             location=pyautogui.locateCenterOnScreen(img,confidence=0.9)
@@ -40,6 +50,8 @@ def mouseClick(clickTimes,lOrR,img,reTry):
                 print("重复")
                 i += 1
             time.sleep(0.1)
+    print("mouseClick State:",State)
+    return State
 
 
 
@@ -52,7 +64,7 @@ def mouseClick(clickTimes,lOrR,img,reTry):
 #           日期：3
 #           布尔：4
 #           error：5
-def dataCheck(my1):
+def dataCheck(my1,Start,end):
     checkCmd = True
     #行数检查
     if my1.nrows<2: #行数小于2行
@@ -60,7 +72,8 @@ def dataCheck(my1):
         checkCmd = False
     #每行数据检查
     i = 1
-    while i < my1.nrows:
+    #while i < my1.nrows:
+    for i in  range(Start,end):
         # 第1列 操作类型检查
         cmdType = my1.row(i)[0]
         if cmdType.ctype != 2 or (cmdType.value != 1.0 and cmdType.value != 2.0 and cmdType.value != 3.0 
@@ -103,20 +116,27 @@ def time_work(my_sheet,i,hour,minute):
 
 
 #任务
-def mainWork(my_sheet,hour,minute):
+def mainWork(my_sheet,hour,minute,Start,end):
     
-    i = 1
-    while i < my_sheet.nrows:
+    print(Start)
+    State = 1
+    #while i < my_sheet.nrows:
+    for i in  range(Start,end):
         #取本行指令的操作类型
+        print(i)
         cmdType = my_sheet.row(i)[0]
+        print(cmdType)
+        print(cmdType.value)
         if cmdType.value == 1.0:
             #取图片名称
             img = my_sheet.row(i)[1].value
             reTry = 1
             if my_sheet.row(i)[2].ctype == 2 and my_sheet.row(i)[2].value != 0: #第三列的内容类型为数字类型，并且不为0
                 reTry = my_sheet.row(i)[2].value
-            mouseClick(1,"left",img,reTry) #左键对匹配图像单击一次，重复: retrys
-            print("单击左键",img)
+            State = mouseClick(1,"left",img,reTry) #左键对匹配图像单击一次，重复: retrys
+            if State == 1 :
+                print("重试次数超时脚本1退出")
+                Break    
         #2代表双击左键
         elif cmdType.value == 2.0:
             #取图片名称
@@ -125,8 +145,10 @@ def mainWork(my_sheet,hour,minute):
             reTry = 1
             if my_sheet.row(i)[2].ctype == 2 and my_sheet.row(i)[2].value != 0:
                 reTry = my_sheet.row(i)[2].value
-            mouseClick(2,"left",img,reTry)
-            print("双击左键",img)
+            State = mouseClick(2,"left",img,reTry)
+            if State == 1 :
+               print("重试次数超时脚本1退出")
+               Break 
         #3代表右键
         elif cmdType.value == 3.0:
             #取图片名称
@@ -157,9 +179,11 @@ def mainWork(my_sheet,hour,minute):
             pyautogui.scroll(int(scroll))
             print("滚轮滑动",int(scroll),"距离")                      
         i += 1
+        return State
 
 #用于给女朋友发早安
 def girlfrien_time(hour,minute):
+    State = 0
     if hour == 99:
         return
     print("girlfrien_time:",hour,":",minute)
@@ -169,13 +193,21 @@ def girlfrien_time(hour,minute):
     #通过索引获取表格sheet页
     my1 = wb.sheet_by_index(3)
     #数据检查
-    checkCmd = dataCheck(my1)
+    checkCmd = dataCheck(my1,1,4)
+    checkCmd = dataCheck(my1,6,9)
     if checkCmd:
         #key=input('选择功能: 1.做一次 2.循环到死 \n')
         key = '1'
         if key=='1':
             #循环拿出每一行指令
-            mainWork(my1, hour,minute)
+            State = mainWork(my1, hour,minute,1,4) #执行自动化脚本1
+            if State == 1:          #脚本1执行失败
+                 State = mainWork(my1, hour,minute,6,9)  #执行自动化脚本2     
+            if State == 1:  
+                print("任务执行失败,此任务退出")    
+                return  
+            else:
+                print("任务执行成功！")
         elif key=='2':
             while True:
                 mainWork(my1 , hour,minute)
@@ -185,4 +217,4 @@ def girlfrien_time(hour,minute):
         print('输入有误或者已经退出!')
 
 if __name__ == '__main__': #如果此文件不是作为其他文件的输如文件那么if成立,否则__name__==__文件名__
-    girlfrien_time(99,99)
+    girlfrien_time(12,00)
