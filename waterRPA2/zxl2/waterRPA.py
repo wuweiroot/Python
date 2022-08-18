@@ -112,6 +112,8 @@ def time_work(my_sheet,i,hour,minute):
             inputValue = my_sheet.row(i)[3].value   
     elif hour == 11 and minute == 0:
             inputValue = my_sheet.row(i)[4].value  
+    elif hour ==99 and minute == 99:
+            inputValue = my_sheet.row(i)[4].value  
     return inputValue
 
 
@@ -121,9 +123,9 @@ def mainWork(my_sheet,hour,minute,Start,end):
     print(Start)
     State = 1
     #while i < my_sheet.nrows:
-    for i in  range(Start,end):
+    for i in  range(Start,end+1):   #前闭后开区间
         #取本行指令的操作类型
-        print(i)
+        print("指令行i:",i)
         cmdType = my_sheet.row(i)[0]
         print(cmdType)
         print(cmdType.value)
@@ -135,8 +137,8 @@ def mainWork(my_sheet,hour,minute,Start,end):
                 reTry = my_sheet.row(i)[2].value
             State = mouseClick(1,"left",img,reTry) #左键对匹配图像单击一次，重复: retrys
             if State == 1 :
-                print("重试次数超时脚本1退出")
-                Break    
+                print("重试次数超时脚本1退出")  
+                return State
         #2代表双击左键
         elif cmdType.value == 2.0:
             #取图片名称
@@ -148,7 +150,7 @@ def mainWork(my_sheet,hour,minute,Start,end):
             State = mouseClick(2,"left",img,reTry)
             if State == 1 :
                print("重试次数超时脚本1退出")
-               Break 
+               return State
         #3代表右键
         elif cmdType.value == 3.0:
             #取图片名称
@@ -161,7 +163,7 @@ def mainWork(my_sheet,hour,minute,Start,end):
             print("右键",img) 
         #4代表输入
         elif cmdType.value == 4.0:
-            inputValue =  time_work(my_sheet,i,hour,minute)  
+            inputValue =  time_work(my_sheet,i,hour,minute)   #发送消息内容
             pyperclip.copy(inputValue)
             pyautogui.hotkey('ctrl','v')
             time.sleep(0.5)
@@ -179,7 +181,7 @@ def mainWork(my_sheet,hour,minute,Start,end):
             pyautogui.scroll(int(scroll))
             print("滚轮滑动",int(scroll),"距离")                      
         i += 1
-        return State
+    return State
 
 #用于给女朋友发早安
 def girlfrien_time(hour,minute):
@@ -193,8 +195,9 @@ def girlfrien_time(hour,minute):
     #通过索引获取表格sheet页
     my1 = wb.sheet_by_index(3)
     #数据检查
-    checkCmd = dataCheck(my1,1,4)
-    checkCmd = dataCheck(my1,6,9)
+    checkCmd = dataCheck(my1,1,5)
+    checkCmd = dataCheck(my1,6,11)
+    checkCmd = dataCheck(my1,13,18)
     if checkCmd:
         #key=input('选择功能: 1.做一次 2.循环到死 \n')
         key = '1'
@@ -202,7 +205,11 @@ def girlfrien_time(hour,minute):
             #循环拿出每一行指令
             State = mainWork(my1, hour,minute,1,4) #执行自动化脚本1
             if State == 1:          #脚本1执行失败
-                 State = mainWork(my1, hour,minute,6,9)  #执行自动化脚本2     
+                 print("脚本1执行失败，进入脚本2")
+                 State = mainWork(my1, hour,minute,6,11)  #执行自动化脚本2     
+            if State == 1:          #脚本2执行失败
+                 print("脚本2执行失败，进入脚本3")
+                 State = mainWork(my1, hour,minute,13,18)  #执行自动化脚本3  
             if State == 1:  
                 print("任务执行失败,此任务退出")    
                 return  
