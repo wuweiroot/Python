@@ -2,10 +2,14 @@
 from ast import And, Break, Return
 import re
 from sre_parse import State
+from struct import iter_unpack
 import pyautogui  #主力库
 import time
 import xlrd
 import pyperclip
+import random
+import datetime
+import os,sys
 
 #定义鼠标事件
 
@@ -106,15 +110,39 @@ def dataCheck(my1,Start,end):
     return checkCmd
 #时间任务
 def time_work(my_sheet,i,hour,minute):
+    j = 1
+    j = random.randrange(1,25,1)
     if hour == 8 and minute == 0:
             inputValue = my_sheet.row(i)[1].value    
     elif hour == 12 and minute == 0:
             inputValue = my_sheet.row(i)[3].value   
     elif hour == 11 and minute == 0:
             inputValue = my_sheet.row(i)[4].value  
+    elif hour ==5 and minute ==21:
+            inputValue = "我爱你！"
+    elif hour ==13 and minute ==14:
+            inputValue = "一生一世，我爱你！"
+    elif hour ==0 and minute ==0:
+            inputValue = "新的一天依旧爱你哦！"
     elif hour ==99 and minute == 99:
-            inputValue = my_sheet.row(i)[4].value  
+            print("j =",j)
+            inputValue = my_sheet.row(j)[6].value  
+            print("inputValue:",inputValue)
     return inputValue
+
+#发送消息前添加消息
+def add_information(my_sheet):
+    j = random.randrange(1,25,1)
+    inputValue = my_sheet.row(j)[6].value  
+    print(inputValue)
+    pyperclip.copy(inputValue)
+    pyautogui.hotkey('ctrl','v')
+    reTry = 1
+    img = my_sheet.row(3)[1].value
+    State = mouseClick(1,"left",img,reTry) #左键对匹配图像单击一次，重复: retrys
+    if State == 1 :
+       print("重试次数超时脚本1退出")  
+    return State
 
 
 #任务
@@ -163,6 +191,7 @@ def mainWork(my_sheet,hour,minute,Start,end):
             print("右键",img) 
         #4代表输入
         elif cmdType.value == 4.0:
+            add_information(my_sheet)
             inputValue =  time_work(my_sheet,i,hour,minute)   #发送消息内容
             pyperclip.copy(inputValue)
             pyautogui.hotkey('ctrl','v')
@@ -186,9 +215,9 @@ def mainWork(my_sheet,hour,minute,Start,end):
 #用于给女朋友发早安
 def girlfrien_time(hour,minute):
     State = 0
-    if hour == 99:
+    if hour == 9999:
         return
-    print("girlfrien_time:",hour,":",minute)
+    print("girlfrien_time:", datetime.datetime.now())
     file = '.\zxl2\cmd.xls'
     #打开文件
     wb = xlrd.open_workbook(filename=file)  #读exccle
@@ -215,6 +244,7 @@ def girlfrien_time(hour,minute):
                 return  
             else:
                 print("任务执行成功！")
+                print(datetime.datetime.now())
         elif key=='2':
             while True:
                 mainWork(my1 , hour,minute)

@@ -19,25 +19,34 @@ if __name__ == '__main__': #如果此文件不是作为其他文件的输如文�
     #time_flag = 0 
    # path_file = os.path.join('zxl11.txt')
     Text = True
-    Other = True
+    Other = False
     print("hello")
     while True:
-        #not_time = datetime.datetime.now()
-        #hour = not_time.hour
-        #minute = not_time.minute
-        #print(hour,":",minute)
-        if(datetime.datetime.now().hour==8 or datetime.datetime.now().hour==12 or datetime.datetime.now().hour==23 or Text or Other):
             hour = datetime.datetime.now().hour
             minute = datetime.datetime.now().minute
-            print(hour,":",minute)
+
             if (hour==8 and minute==0)or (hour==12 and minute==0) or(hour==23 and minute==0):
-                zxl.girlfrien_time(hour,minute)
-            elif Other:
-                zxl.girlfrien_time(99,99)
+                zxl.girlfrien_time(datetime.datetime.now().hour,datetime.datetime.now().minute)
+
+            if (hour==5 and minute==21)or (hour==13 and minute==14) or(hour==0 and minute==0):
+                zxl.girlfrien_time(hour,minute)  
+             
+              
             elif Text:
                 print(datetime.datetime.now())
                 zxl.girlfrien_time(12,0)
-                time.sleep(58)
+    
+            time.sleep(58)
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -56,3 +65,7 @@ if __name__ == '__main__': #如果此文件不是作为其他文件的输如文�
             hour = datetime.datetime.now().hour
             minute = datetime.datetime.now().minute
             waterRPA.girlfrien_time(3,hour,minute)
+
+
+        elif (hour==15 and minute==21) or (hour==17 and minute==20) or (hour==18 and minute==30) or (hour==6 and minute==30) or  (hour==9 and minute==30):
+        zxl.girlfrien_time(99,99)
