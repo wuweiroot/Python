@@ -8,7 +8,7 @@ import pyperclip
 import datetime
 import os,sys
 import zxl2.waterRPA as zxl
-sys.path.append("E:\culture\Professional\Project\python")
+sys.path.append("E:\culture\Professional\Project\Python")
 import daily_reminder.main0 as zxl_main0
 
 
@@ -20,7 +20,7 @@ os.chdir(sys.path[0])  #使用相对路径
 if __name__ == '__main__': #如果此文件不是作为其他文件的输如文件那么if成立,否则__name__==__文件名__
     #time_flag = 0 
    # path_file = os.path.join('zxl11.txt')
-    Text = 1
+    Text = 0
     Other = False
     print("hello")
     while True:
@@ -29,7 +29,7 @@ if __name__ == '__main__': #如果此文件不是作为其他文件的输如文�
 
             if (hour==8 and minute==0)or (hour==12 and minute==0) or(hour==23 and minute==0):  #日常任务
                 zxl_main0.main0()
-                zxl.girlfrien_time(datetime.datetime.now().hour,datetime.datetime.now().minute)
+                zxl.girlfrien_time(datetime.datetimeu.now().hour,datetime.datetime.now().minute)
 
             elif ((hour==5 or hour == 5+12)and minute==21)or (hour==13 and minute==14) or(hour==0 and minute==0): #添花任务
                 zxl.girlfrien_time(hour,minute)  
